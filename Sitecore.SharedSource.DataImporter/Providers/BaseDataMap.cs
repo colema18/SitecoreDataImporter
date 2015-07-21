@@ -422,7 +422,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <param name="message"></param>
         protected void Log(string errorType, string message)
         {
-            log.AppendFormat("{0} : {1}", errorType, message).AppendLine().AppendLine();
+            log.AppendFormat("DATA_IMPORTER - {0} : {1}", errorType, message).AppendLine().AppendLine();
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         public void CreateNewItem(Item parent, object importRow, string newItemName)
         {
             var nItemTemplate = GetNewItemTemplate(importRow);
-
+            var updating = false;
             using (new LanguageSwitcher(ImportToLanguage))
             {
                 //get the parent in the specific language
@@ -594,6 +594,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
                 if (newItem != null)
                 {
+                    updating = true;
                     if (SkipExistingItems)
                         return;
                     if (!Overwrite)
@@ -626,6 +627,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
                     //calls the subclass method to handle custom fields and properties
                     ProcessCustomData(ref newItem, importRow);
+
+                    Log("INFO", string.Format("{0} Material {1}", newItem.DisplayName, updating ? "Updated" : "Added"));
                 }
             }
         }
